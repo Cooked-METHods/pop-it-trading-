@@ -1,0 +1,234 @@
+-- Load the OrionLib UI Library
+local OrionLib = loadstring(game:HttpGet('https://pastebin.com/raw/WRUyYTdY'))()
+
+local Window = OrionLib:MakeWindow({
+    Name = "Symphony Hub",
+    HidePremium = false,
+    SaveConfig = true,
+    ConfigFolder = "SymphonyHubConfig"
+})
+
+local player = game.Players.LocalPlayer
+local userInputService = game:GetService("UserInputService")
+local scamKey = "E" -- Default key for PC scam function
+local fakeJumpKey = "E" -- Default key for PC fake jump function
+local isTypingInChat = false -- Flag to prevent actions while typing in chat
+
+-- Prevent functions from activating while typing in chat
+userInputService.TextBoxFocused:Connect(function()
+    isTypingInChat = true
+end)
+
+userInputService.TextBoxFocusReleased:Connect(function()
+    isTypingInChat = false
+end)
+
+-- Scam Function
+local function performScam()
+    local myName = player.Name
+    local character = player.Character or player.CharacterAdded:Wait()
+    local humanoidRootPart = character:WaitForChild("HumanoidRootPart")
+    local myCFrame = humanoidRootPart.CFrame
+
+    local function changeCFrameAndDisableCollide(object)
+        for _, child in ipairs(object:GetChildren()) do
+            if child:IsA("BasePart") then
+                child.CFrame = myCFrame
+                child.CanCollide = false
+            end
+            changeCFrameAndDisableCollide(child)
+        end
+    end
+
+    for _, object in ipairs(game.Workspace.Dropped:GetChildren()) do
+        local owner = object:FindFirstChild("Owner")
+
+        if owner then
+            if owner:IsA("StringValue") then
+                if owner.Value:match("^%s*(.-)%s*$") == myName then
+                    local handle = object:FindFirstChild("Handle")
+                    if handle and handle:IsA("BasePart") then
+                        handle.CFrame = myCFrame
+                        handle.CanCollide = false
+                    end
+                    changeCFrameAndDisableCollide(object)
+                end
+            elseif owner:IsA("ObjectValue") then
+                if owner.Value == player then
+                    local handle = object:FindFirstChild("Handle")
+                    if handle and handle:IsA("BasePart") then
+                        handle.CFrame = myCFrame
+                        handle.CanCollide = false
+                    end
+                    changeCFrameAndDisableCollide(object)
+                end
+            end
+        end
+    end
+
+    wait(0.2)
+    local humanoid = character:WaitForChild("Humanoid")
+    humanoid.Jump = true
+    print("Scam function executed.")
+end
+
+-- Fake Jump Function
+local function performFakeJump()
+    local character = player.Character or player.CharacterAdded:Wait()
+    local humanoid = character:WaitForChild("Humanoid")
+    local humanoidRootPart = character:WaitForChild("HumanoidRootPart")
+
+    humanoid:ChangeState(Enum.HumanoidStateType.Jumping)
+    wait(0.2)
+    humanoidRootPart.CFrame = humanoidRootPart.CFrame + Vector3.new(0, 0.8, 0)
+    print("Fake jump performed!")
+end
+
+-- PC Scam Key Setup
+local function setupPcScamKey()
+    local scamGui = Instance.new("ScreenGui")
+    scamGui.Parent = player:WaitForChild("PlayerGui")
+
+    local scamFrame = Instance.new("Frame")
+    scamFrame.Size = UDim2.new(0.3, 0, 0.2, 0)
+    scamFrame.Position = UDim2.new(0.35, 0, 0.4, 0)
+    scamFrame.BackgroundColor3 = Color3.fromRGB(70, 70, 70)
+    scamFrame.Active = true
+    scamFrame.Draggable = true
+    scamFrame.Parent = scamGui
+
+    local titleLabel = Instance.new("TextLabel")
+    titleLabel.Size = UDim2.new(1, 0, 0.3, 0)
+    titleLabel.Position = UDim2.new(0, 0, 0, 0)
+    titleLabel.Text = "Enter Scam Key"
+    titleLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+    titleLabel.Font = Enum.Font.SourceSansBold
+    titleLabel.TextScaled = true
+    titleLabel.Parent = scamFrame
+
+    local scamKeyTextbox = Instance.new("TextBox")
+    scamKeyTextbox.Size = UDim2.new(0.8, 0, 0.3, 0)
+    scamKeyTextbox.Position = UDim2.new(0.1, 0, 0.3, 0)
+    scamKeyTextbox.PlaceholderText = "Press a key (e.g., E)"
+    scamKeyTextbox.TextColor3 = Color3.fromRGB(255, 255, 255)
+    scamKeyTextbox.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+    scamKeyTextbox.Font = Enum.Font.SourceSans
+    scamKeyTextbox.TextScaled = true
+    scamKeyTextbox.Parent = scamFrame
+
+    scamKeyTextbox.FocusLost:Connect(function()
+        scamKey = scamKeyTextbox.Text:upper()
+        scamGui:Destroy()
+    end)
+end
+
+-- PC Fake Jump Key Setup
+local function setupPcFakeJumpKey()
+    local fakeJumpGui = Instance.new("ScreenGui")
+    fakeJumpGui.Parent = player:WaitForChild("PlayerGui")
+
+    local fakeJumpFrame = Instance.new("Frame")
+    fakeJumpFrame.Size = UDim2.new(0.3, 0, 0.2, 0)
+    fakeJumpFrame.Position = UDim2.new(0.35, 0, 0.4, 0)
+    fakeJumpFrame.BackgroundColor3 = Color3.fromRGB(70, 70, 70)
+    fakeJumpFrame.Active = true
+    fakeJumpFrame.Draggable = true
+    fakeJumpFrame.Parent = fakeJumpGui
+
+    local titleLabel = Instance.new("TextLabel")
+    titleLabel.Size = UDim2.new(1, 0, 0.3, 0)
+    titleLabel.Position = UDim2.new(0, 0, 0, 0)
+    titleLabel.Text = "Enter Fake Jump Key"
+    titleLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+    titleLabel.Font = Enum.Font.SourceSansBold
+    titleLabel.TextScaled = true
+    titleLabel.Parent = fakeJumpFrame
+
+    local fakeJumpKeyTextbox = Instance.new("TextBox")
+    fakeJumpKeyTextbox.Size = UDim2.new(0.8, 0, 0.3, 0)
+    fakeJumpKeyTextbox.Position = UDim2.new(0.1, 0, 0.3, 0)
+    fakeJumpKeyTextbox.PlaceholderText = "Press a key (e.g., E)"
+    fakeJumpKeyTextbox.TextColor3 = Color3.fromRGB(255, 255, 255)
+    fakeJumpKeyTextbox.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+    fakeJumpKeyTextbox.Font = Enum.Font.SourceSans
+    fakeJumpKeyTextbox.TextScaled = true
+    fakeJumpKeyTextbox.Parent = fakeJumpFrame
+
+    fakeJumpKeyTextbox.FocusLost:Connect(function()
+        fakeJumpKey = fakeJumpKeyTextbox.Text:upper()
+        fakeJumpGui:Destroy()
+    end)
+end
+
+-- Add OrionLib Tabs and Buttons
+local scamTab = Window:MakeTab({
+    Name = "Scam",
+    Icon = "rbxassetid://1",
+    PremiumOnly = false
+})
+
+scamTab:AddButton({
+    Name = "!scam! (PC)",
+    Callback = setupPcScamKey
+})
+
+local fakeJumpTab = Window:MakeTab({
+    Name = "Fake Jump",
+    Icon = "rbxassetid://2",
+    PremiumOnly = false
+})
+
+fakeJumpTab:AddButton({
+    Name = "Fake Jump (PC)",
+    Callback = setupPcFakeJumpKey
+})
+
+local configTab = Window:MakeTab({
+    Name = "Config",
+    Icon = "rbxassetid://3",
+    PremiumOnly = false
+})
+
+configTab:AddButton({
+    Name = "Trade Value",
+    Callback = function()
+        if game.Players.LocalPlayer:FindFirstChild("XRay") then
+            game.Players.LocalPlayer.XRay.Value = true
+        end
+        print("Trade Value activated.")
+    end
+})
+
+configTab:AddButton({
+    Name = "Hop Server",
+    Callback = function()
+        local TeleportService = game:GetService("TeleportService")
+
+        -- Attempt to teleport to a different server
+        local success, errorMessage = pcall(function()
+            TeleportService:Teleport(game.PlaceId, game.Players.LocalPlayer)
+        end)
+
+        if success then
+            print("Successfully hopping to another server.")
+        else
+            print("Failed to hop server: " .. errorMessage)
+        end
+    end
+})
+
+-- Keybinds for PC Scam and Fake Jump
+userInputService.InputBegan:Connect(function(input, gameProcessed)
+    if gameProcessed then return end
+    if input.UserInputType == Enum.UserInputType.Keyboard then
+        if not isTypingInChat then
+            if input.KeyCode.Name == scamKey then
+                performScam()
+            elseif input.KeyCode.Name == fakeJumpKey then
+                performFakeJump()
+            end
+        end
+    end
+end)
+
+OrionLib:Init()
