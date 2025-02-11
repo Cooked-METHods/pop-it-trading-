@@ -80,7 +80,7 @@ local function performFakeJump()
 
     humanoid:ChangeState(Enum.HumanoidStateType.Jumping)
     wait(0.2)
-    humanoidRootPart.CFrame = humanoidRootPart.CFrame + Vector3.new(0, 0.8, 0)
+    humanoidRootPart.CFrame = humanoidRootPart.CFrame + Vector3.new(0, 0.1, 0)
     print("Fake jump performed!")
 end
 
